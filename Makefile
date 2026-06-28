@@ -25,7 +25,6 @@ clean:
 fclean:
 			@printf "$(RED)Delete containers, volumes and images...$(RESET)\n"
 			@docker compose down -v --rmi all
-			@docker image rm node:24-alpine || true
 			@docker image prune -f --filter "label=com.project.name=crud"
 			@printf "$(RED)[fclean done]$(RESET)\n"
 

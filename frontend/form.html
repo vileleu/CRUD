@@ -37,8 +37,7 @@
       description: document.getElementById('f-desc').value.trim(),
       imageUrl: document.getElementById('f-img').value.trim(),
     };
-    if (!body.title) {
-      alert('Le titre est requis.');
+    if (!body.title || !body.year || !body.description || !body.imageUrl) {
       return;
     }
     await fetch(id ? `${API}/${id}` : API, {
