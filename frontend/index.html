@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Films</title>
+</head>
+<body>
+
+<header>
+  <h1>Films</h1>
+  <a href="form.html">+ Ajouter</a>
+</header>
+
+<div id="grid"></div>
+<p id="empty" style="display:none">Aucun film.</p>
+
+<script>
+  const API = 'http://localhost:3000/api/movies';
+
+  async function fetchMovies() {
+    const res = await fetch(API);
+    const movies = await res.json();
+    render(movies);
+  }
+
+  function render(movies) {
+    const grid = document.getElementById('grid');
+    const empty = document.getElementById('empty');
+    grid.innerHTML = '';
+    if (!movies.length) {
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+    movies.forEach(m => {
+      grid.innerHTML += `
+        <div>
+          <img src="${m.imageUrl || ''}" alt="${m.title}" width="200" />
+          <p>${m.title} (${m.year})</p>
+          <p>${m.description || ''}</p>
+          <a href="form.html?id=${m._id}">Modifier</a>
+          <button onclick="deleteMovie('${m._id}')">Supprimer</button>
+        </div>
+        <hr>
+      `;
+    });
+  }
+
+  async function deleteMovie(id) {
+    await fetch(`${API}/${id}`, { method: 'DELETE' });
+    fetchMovies();
+  }
+
+  fetchMovies();
+</script>
+</body>
+</html>

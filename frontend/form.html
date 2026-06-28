@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Film</title>
+</head>
+<body>
+
+<a href="index.html">← Retour</a>
+<h1 id="page-title">Ajouter un film</h1>
+
+<label>Titre<br><input id="f-title" type="text" /></label><br><br>
+<label>Année<br><input id="f-year" type="number" /></label><br><br>
+<label>Description<br><textarea id="f-desc"></textarea></label><br><br>
+<label>Image URL<br><input id="f-img" type="text" /></label><br><br>
+<button onclick="save()">Enregistrer</button>
+
+<script>
+  const API = 'http://localhost:3000/api/movies';
+  const id = new URLSearchParams(window.location.search).get('id');
+  if (id) {
+    document.getElementById('page-title').textContent = 'Modifier un film';
+    fetch(`${API}/${id}`)
+      .then(res => res.json())
+      .then(m => {
+        document.getElementById('f-title').value = m.title || '';
+        document.getElementById('f-year').value = m.year || '';
+        document.getElementById('f-desc').value = m.description || '';
+        document.getElementById('f-img').value = m.imageUrl || '';
+      });
+  }
+
+  async function save() {
+    const body = {
+      title: document.getElementById('f-title').value.trim(),
+      year: parseInt(document.getElementById('f-year').value),
+      description: document.getElementById('f-desc').value.trim(),
+      imageUrl: document.getElementById('f-img').value.trim(),
+    };
+    if (!body.title) {
+      alert('Le titre est requis.');
+      return;
+    }
+    await fetch(id ? `${API}/${id}` : API, {
+      method: id ? 'PUT' : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    window.location.href = 'index.html';
+  }
+</script>
+</body>
+</html>

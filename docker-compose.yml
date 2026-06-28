@@ -1,0 +1,35 @@
+services:
+  frontend:
+    container_name: crud-frontend
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    labels:
+      - "com.project.name=crud"
+
+  backend:
+    container_name: crud-backend
+    build: ./backend
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_URL=mongodb://mongodb:27017/crud
+    depends_on:
+      - mongodb
+    labels:
+      - "com.project.name=crud"
+
+  mongodb:
+    container_name: crud-mongodb
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+      - mongo_config:/data/configdb
+
+volumes:
+  mongo_data:
+  mongo_config:
